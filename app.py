@@ -71,7 +71,7 @@ def get_list():
     for curr_str in arr_db:
         result_list.append(
             {
-                "order_id"  :curr_str[0],
+                'order_id'  :curr_str[0],
                 'order_name':curr_str[1],
                 'start_date':curr_str[2]
             }
@@ -85,7 +85,7 @@ def get_list_id(order_id):
     for curr_str in arr_db:
         result_list.append(
             {
-                "order_id"  :curr_str[0],
+                'order_id'  :curr_str[0],
                 'order_name':curr_str[1],
                 'start_date':curr_str[2]
             }
@@ -164,12 +164,15 @@ def get_list_tasks():
         result_list.append(
             {
                 'task_id': curr_str[0],
-                'duration': curr_str[1],
-                'resource': curr_str[2],
-                'pred': curr_str[3]
+                'order_id': curr_str[1],
+                'duration': curr_str[2],
+                'resource': curr_str[3],
+                'pred': curr_str[4]
             }
             )
-    return jsonify(result_list)
+    print(result_list)
+    print(jsonify(result_list).json)
+    return print(result_list)
 #список туториалов обновляется на сервере
 #в него будет добавляться новый элемент
 #по request получаем, когда отправляем от клиента к серверу
@@ -213,9 +216,10 @@ def get_id_task(tasks_id):
         result_list.append(
             {
                 'task_id': curr_str[0],
-                'duration': curr_str[1],
-                'resource': curr_str[2],
-                'pred': curr_str[3]
+                'order_id': curr_str[1],
+                'duration': curr_str[2],
+                'resource': curr_str[3],
+                'pred': curr_str[4]
             }
             )
     return jsonify(result_list)
