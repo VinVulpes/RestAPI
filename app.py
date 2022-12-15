@@ -63,6 +63,10 @@ tasks = [
 
 #route обрабатывает запросы клиента к серверу
 #сначала обработчик гет запросов
+@app.route('/', methods=['GET'])
+def start():
+    a = '<h1>Hello Everyone!</h1><p> / orders - get all orders</p><h2>Laboratory Work 1</h2><p> / tasks - get all tasks</p><p>Set id after words and you get one personal line from Data Base</p><h2>Laboratory Work 2</h2><p>Redis - sum duration /orders/calc/<id></p>'
+    return(a)
 @app.route('/orders', methods=['GET'])
 def get_list():
     db.cur.execute('''SELECT * FROM orders;''')
@@ -235,7 +239,7 @@ def delete_list_tasks(task_id):
 
     #Лаба 2##################################################
     
-@app.get('/api/orders/calc/<order_id>')
+@app.get('/orders/calc/<order_id>')
 def api_calc_plan3(order_id):
     connected = False
     db.cur.execute('''SELECT duration FROM tasks WHERE order_id = %s''',(str(int(order_id)),))
@@ -249,7 +253,7 @@ def api_calc_plan3(order_id):
             connected = True
         duration = r.get(order_id) #смотрит вносили мы в редис данные по duration
         if duration is None:
-            duration =  sum([dur for dur in dur_from_db])  # Highload
+            duration =  sum(dur[0] for dur in dur_from_db)  # Highload
             r.setex(order_id, 100, duration)
         else:
             print('data retrieved from cache in redis')
