@@ -1,7 +1,7 @@
 import random
 from typing import List
 from urllib import request
-import flask, requests, redis
+import flask, requests, lab2
 from flask import jsonify, json, render_template, request
 import heapq as hq
 
@@ -127,7 +127,7 @@ def api_calc_plan3(order_id):
     if 'tasks' not in order[order_id]:
         return {'duration' :0}, 201
     else: 
-        r = redis.Redis(decode_responses=True)
+        r = lab2.Redis(decode_responses=True)
         if r.ping() == True:
             print('connection to redis')
             connected = True
@@ -159,7 +159,7 @@ def api_calc_plan2(order_id):
         #result = requests.post('http://localhost:5001/api/orders/recivefromcalc', json=tasks)
         try:
             #r = redis.Redis(decode_responses=True)
-            r = redis.Redis(host='localhost', port=6379) 
+            r = lab2.Redis(host='localhost', port=6379) 
             p = r.pubsub()  
             if r.ping() == True:
                 r.publish('rating', json.dumps(tasks).encode('utf-8')) 

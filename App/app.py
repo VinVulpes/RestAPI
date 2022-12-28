@@ -1,7 +1,6 @@
 
 from flask import Flask, jsonify, request
 import json
-import redis
 # from db import connect_db_pg
 import db
 app = Flask(__name__)
@@ -65,7 +64,7 @@ tasks = [
 #сначала обработчик гет запросов
 @app.route('/', methods=['GET'])
 def start():
-    a = '<h1>Hello Everyone!</h1><p> / orders - get all orders</p><h2>Laboratory Work 1</h2><p> / tasks - get all tasks</p><p>Set id after words and you get one personal line from Data Base</p><h2>Laboratory Work 2</h2><p>Redis - sum duration /orders/calc/<id></p>'
+    a = '<h1>Hello Everyone!</h1><p> / orders - get all orders</p><h2>Laboratory Work 1</h2><p> / tasks - get all tasks</p><p>Set id after words and you get one personal line from Data Base</p><h2>Laboratory Work 2</h2><p>Redis - sum duration on 5001 port /orders/calc/<id></p>'
     return(a)
 @app.route('/orders', methods=['GET'])
 def get_list_orders():
@@ -113,8 +112,7 @@ def post_list():
     return "done: post", 204
 
 #добавить элементы в список
-#нужен id
-@app.route('/orders', methods=['PUT'])
+@app.route('/orders/<int:order_id>', methods=['PUT'])
 def update_list():
     '''
     Updates order (by put)
@@ -174,8 +172,6 @@ def get_list_tasks():
                 'pred': curr_str[4]
             }
             )
-    print(result_list)
-    print(jsonify(result_list).json)
     return result_list
 #список туториалов обновляется на сервере
 #в него будет добавляться новый элемент
@@ -231,37 +227,7 @@ def get_id_task(tasks_id):
 def delete_list_tasks(task_id):
     db.cur.execute(f"DELETE from tasks where id = \'{task_id}\'")
     db.con.commit()
-    
-    # # arr_db = db.cur.fetchall()
-    # idx, _ = next((i for i in enumerate(orders) if i[1]['id'] == task_id), (None, None))
-    # tasks.pop(idx)
     return "done: delete",200
-
-    #Лаба 2##################################################
-    
-@app.get('/orders/calc/<order_id>')
-def api_calc_plan3(order_id):
-    connected = False
-    db.cur.execute('''SELECT duration FROM tasks WHERE order_id = %s''',(str(int(order_id)),))
-    dur_from_db = db.cur.fetchall()
-    if dur_from_db is None: # тут надо проверить что возвращает если запрос ничего не нашел
-        return 'заказ не найден', 404 # или у него нет работ
-    else: 
-        r = redis.Redis(decode_responses=True)
-        if r.ping() == True:
-            print('connection to redis')
-            connected = True
-        duration = r.get(order_id) #смотрит вносили мы в редис данные по duration
-        if duration is None:
-            duration =  sum(dur[0] for dur in dur_from_db)  # Highload
-            r.setex(order_id, 100, duration)
-        else:
-            print('data retrieved from cache in redis')
-        return {'duration': duration}, 201
-
-#Лаба 3##################################################
-
-
 
 if __name__ == '__main__':# this is main!
     db.connect_db_pg()

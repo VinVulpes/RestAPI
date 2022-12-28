@@ -13,7 +13,7 @@ def api_calc_plan3(order_id):
     connected = False
     db.cur.execute('''SELECT duration FROM tasks WHERE order_id = %s''',(str(int(order_id)),))
     dur_from_db = db.cur.fetchall()
-    if dur_from_db is None: # тут надо проверить что возвращает если запрос ничего не нашел
+    if dur_from_db is '0': # тут надо проверить что возвращает если запрос ничего не нашел
         return 'заказ не найден', 404 # или у него нет работ
     else: 
         r = redis.Redis(decode_responses=True)

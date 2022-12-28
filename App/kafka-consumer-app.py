@@ -8,4 +8,4 @@ if __name__ == "__main__":
         auto_offset_reset='earliest')
     print("starting the consumer")
     for msg in consumer:
-        print("Orders = {}".format(json.loads(msg.value)))
+        print("Registered User = {}".format(json.loads(msg.value)))
